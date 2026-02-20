@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareScreen | Immersive Real-Time Visual Relay</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%230ea5e9;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M4 4 L16 28 L28 4' fill='none' stroke='url(%23g)' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M4 28 L16 4 L28 28' fill='none' stroke='url(%23g)' stroke-width='4' stroke-opacity='0.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+</head>
+
+<body>
+    <!-- Premium Logo Intro (Phase 7) -->
+    <div id="splash-screen">
+        <div class="impact-flash"></div>
+        <div class="scanlines"></div>
+        <div class="glitch-surface"></div>
+        <div class="logo-container-3d">
+            <svg class="vmv-logo-svg" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- V1 Gradient (Electric Indigo / Violet) -->
+                    <linearGradient id="gradV1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+                    </linearGradient>
+                    <!-- M Gradient (Emerald / Cyan) -->
+                    <linearGradient id="gradM" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                    </linearGradient>
+                    <!-- V2 Gradient (Neon Rose / Gold) -->
+                    <linearGradient id="gradV2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f43f5e;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <!-- V -->
+                <path class="vmv-v1-path vmv-path" d="M40 20 L80 100 L120 20" pathLength="100" />
+                <path class="vmv-v1-fill vmv-fill" d="M40 20 L80 100 L120 20 L105 20 L80 70 L55 20 Z" />
+
+                <!-- M -->
+                <path class="vmv-m-path vmv-path" d="M160 100 L160 20 L200 60 L240 20 L240 100" pathLength="100" />
+                <path class="vmv-m-fill vmv-fill"
+                    d="M160 100 L160 20 L175 20 L200 45 L225 20 L240 20 L240 100 L225 100 L225 45 L200 70 L175 45 L175 100 Z" />
+
+                <!-- V (Symmetrical) -->
+                <path class="vmv-v2-path vmv-path" d="M280 20 L320 100 L360 20" pathLength="100" />
+                <path class="vmv-v2-fill vmv-fill" d="M280 20 L320 100 L360 20 L345 20 L320 70 L295 20 Z" />
+            </svg>
+            <div class="energy-wave"></div>
+        </div>
+        <div class="brand-full-name">VIEW MY VIEW</div>
+        <div class="designed-by-signature">DESIGNED BY RAGHAVAN S</div>
+    </div>
+
+    <script>
+        // Automatic Transition from Intro to Dashboard
+        window.addEventListener('DOMContentLoaded', () => {
+            const splash = document.getElementById('splash-screen');
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                document.body.classList.add('splash-finished');
+            }, 7500); // 7.5s allows the full cinematic sequence to play
+        });
+    </script>
+
+    <!-- Universe Atmosphere -->
+    <div class="universe-bg">
+        <div class="nebula-1"></div>
+        <div class="nebula-2"></div>
+    </div>
+
+    <!-- Large Fixed Brand Icon (New Design) -->
+    <div class="side-brand-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" class="side-brand-svg">
+            <defs>
+                <linearGradient id="sideLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:var(--accent);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:var(--accent-secondary);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <!-- V -->
+            <path class="v-path-main" d="M4 8 L20 36 L36 8" fill="none" stroke="url(#sideLogoGradient)"
+                stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" pathLength="100" />
+            <!-- Inverted V -->
+            <path class="v-path-inverted" d="M4 32 L20 4 L36 32" fill="none" stroke="url(#sideLogoGradient)"
+                stroke-width="3.5" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round"
+                pathLength="100" />
+        </svg>
+    </div>
+
+    <div class="container center-box">
+        <header style="text-align: center; margin-bottom: 4rem;">
+            <div class="badge" style="margin-bottom: 1.5rem;">SECURE PEER-TO-PEER</div>
+            <h1>The New Standard for<br>Visual Collaboration</h1>
+            <p class="description" style="max-width: 600px; margin: 1.5rem auto;">Establish encrypted visual tunnels
+                instantly. No installations, no Latency, just focus.</p>
+
+            <div class="doc-inline-group">
+                <div class="why-trigger" id="openBenefits">
+                    Why use this?
+                </div>
+
+                <div class="why-trigger" id="openConstraints">
+                    Constraints
+                </div>
+
+                <div class="why-trigger" id="openUserGuide">
+                    User Guide
+                </div>
+            </div>
+        </header>
+
+        <div class="home-grid">
+            <!-- Share Option -->
+            <div class="glass-panel action-card">
+                <div class="data-flow-container">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="none">
+                        <circle class="flow-particle animate-out-n p1" cx="50" cy="50" r="2" />
+                        <circle class="flow-particle animate-out-s p2" cx="50" cy="50" r="3" />
+                        <circle class="flow-particle animate-out-e p3" cx="50" cy="50" r="2" />
+                        <circle class="flow-particle animate-out-w p4" cx="50" cy="50" r="3" />
+                    </svg>
+                </div>
+                <div class="icon-wrapper">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+                <h2>Initiate Session</h2>
+                <p class="description" style="font-size: 0.875rem; margin-bottom: 2rem;">Host a secure visual relay and
+                    invite viewers via professional access tokens.</p>
+                <button class="btn-action btn-primary" onclick="window.location.href='share.html'">
+                    Launch Share Hub
+                </button>
+            </div>
+
+            <!-- Join Option -->
+            <div class="glass-panel action-card">
+                <div class="data-flow-container">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="none">
+                        <circle class="flow-particle animate-in-n p1" cx="50" cy="50" r="2" />
+                        <circle class="flow-particle animate-in-s p2" cx="50" cy="50" r="3" />
+                        <circle class="flow-particle animate-in-e p3" cx="50" cy="50" r="2" />
+                        <circle class="flow-particle animate-in-w p4" cx="50" cy="50" r="3" />
+                    </svg>
+                </div>
+                <div class="icon-wrapper">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+                    </svg>
+                </div>
+                <h2>Connect to Relay</h2>
+                <p class="description" style="font-size: 0.875rem; margin-bottom: 2rem;">Enter an authorized session
+                    code to receive high-fidelity visual streams.</p>
+                <button class="btn-action btn-secondary" onclick="window.location.href='join.html'">
+                    Enter Access Code
+                </button>
+            </div>
+        </div>
+
+        <footer style="margin-top: 6rem; text-align: center; color: var(--text-muted); font-size: 0.75rem;">
+            <p style="margin-top: 2rem;">
+                &copy; 2026 ShareScreen Universe. All visual relays are fully encrypted.
+                <br>Implemented and designed by RAGHAVAN S
+            </p>
+        </footer>
+    </div>
+
+    <!-- Benefits Overlay Container -->
+    <div class="benefits-overlay" id="benefitsOverlay">
+        <div class="close-benefits" id="closeBenefits">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div class="benefits-content">
+            <header style="text-align: center; margin-bottom: 4rem;">
+                <div class="badge">TECHNICAL BENEFITS</div>
+                <h2 style="font-size: 2.5rem; color: white; margin-top: 1rem;">Security • Architecture • Performance
+                </h2>
+            </header>
+
+            <div class="benefits-grid">
+                <!-- Security Pillar -->
+                <div class="benefit-pillar">
+                    <h3>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Security
+                    </h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> No user accounts, logins, or personal data collection</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Secure, one-time access code for session entry</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> End-to-end browser-level encryption via WebRTC</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Access code validated at host level</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> No public rooms or persistent sessions</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> No recordings, no storage, no cloud backups</li>
+                    </ul>
+                </div>
+
+                <!-- Architecture Pillar -->
+                <div class="benefit-pillar">
+                    <h3>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Architecture
+                    </h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Fully peer-to-peer (P2P) media transmission</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Video, audio, and screen data never touch servers</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Backend server used only for connection signaling</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Hosted using Netlify (frontend) and Render (signaling)</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Uses Google STUN for secure peer discovery</li>
+                    </ul>
+                </div>
+
+                <!-- Performance Pillar -->
+                <div class="benefit-pillar">
+                    <h3>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Performance
+                    </h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Browser-based — no installation required</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Low-latency real-time visual transmission</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Multi-platform: Laptop Sharing & Mobile Camera</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Zero server media bandwidth consumption</li>
+                        <li class="benefit-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Reduced server lag due to P2P architecture</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.9rem; font-style: italic;">
+                Built for privacy-first, instant visual collaboration.
+            </div>
+        </div>
+    </div>
+
+    <!-- Constraints Overlay -->
+    <div class="benefits-overlay" id="constraintsOverlay">
+        <div class="close-benefits" id="closeConstraints">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div class="benefits-content">
+            <header style="text-align: center; margin-bottom: 4rem;">
+                <div class="badge">SYSTEM CONSTRAINTS</div>
+                <h2 style="font-size: 2.5rem; color: white; margin-top: 1rem;">Network & Connectivity</h2>
+            </header>
+
+            <div class="benefits-grid">
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        </svg> Network Restrictions</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item">Corporate Wi-Fi/VPNs often block STUN/ICE relays.</li>
+                        <li class="benefit-item">Firewalls may prevent peer discovery in strict environments.</li>
+                        <li class="benefit-item">Switching to public networks usually resolves connection issues.</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg> Mobile Limitations</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item">Mobile browsers cannot share system screens or audio.</li>
+                        <li class="benefit-item">Only Direct Camera and Microphone relay is supported.</li>
+                        <li class="benefit-item">For full screen-sharing, use a desktop/laptop browser.</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg> Cold Start Delays</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item">Initial P2P handshakes take 10-60s to stabilize.</li>
+                        <li class="benefit-item">Black screens are normal during the synchronization phase.</li>
+                        <li class="benefit-item">Wait at least 1 minute before declaring a connection failure.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.9rem; font-style: italic;">
+                ShareScreen Universe • Protocol Constraints
+            </div>
+        </div>
+    </div>
+    <div class="benefits-overlay" id="guideOverlay">
+        <div class="close-benefits" id="closeGuide">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div class="benefits-content">
+            <header style="text-align: center; margin-bottom: 3rem;">
+                <div class="badge">MISSION PROTOCOL</div>
+                <h2 style="font-size: 2rem; color: white; margin-top: 1rem;">User Guide</h2>
+            </header>
+
+            <div class="benefits-grid">
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg> Connection Flow</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item"><strong>1. Viewer First:</strong> Must click "Establish Connection"
+                            before the Host.</li>
+                        <li class="benefit-item"><strong>2. Security Handshake:</strong> This viewer-first sequence is
+                            an intentional security feature.</li>
+                        <li class="benefit-item"><strong>3. Sync:</strong> System synchronizes relay points during the
+                            handshake.</li>
+                        <li class="benefit-item"><strong>4. Host:</strong> "Begin Transmission" unlocks ONLY after
+                            viewer is ready.</li>
+                        <li class="benefit-item"><strong>5. Ready:</strong> Host clicks to start mission.</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg> Host Rules</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item">Transmission is blocked until viewer initiates.</li>
+                        <li class="benefit-item">This prevents unauthorized or blind sharing.</li>
+                        <li class="benefit-item">Handshake takes 10-60s (protocol behavior).</li>
+                        <li class="benefit-item">Use Smart Controls to manage Mic/Cam.</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg> Viewer Rules</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item">Must be the one to start the flow.</li>
+                        <li class="benefit-item">Await host stream after Establishment.</li>
+                        <li class="benefit-item">Full-screen mode blocks Duo requests.</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-pillar">
+                    <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg> Duo Mode</h3>
+                    <ul class="benefit-list">
+                        <li class="benefit-item">Optional 2-way voice collaboration.</li>
+                        <li class="benefit-item">Viewer must accept the voice link.</li>
+                        <li class="benefit-item">Share specifics tabs to avoid echo.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.9rem; font-style: italic;">
+                ShareScreen Universe • Mission Protocol Guide
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Centralized Overlay Logic
+        function setupOverlay(overlayId, openBtnId, closeBtnId) {
+            const overlay = document.getElementById(overlayId);
+            const openBtn = document.getElementById(openBtnId);
+            const closeBtn = document.getElementById(closeBtnId);
+
+            if (!overlay || !openBtn || !closeBtn) return;
+
+            openBtn.onclick = () => {
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                // Staggered list item animation
+                overlay.querySelectorAll('.benefit-item').forEach((item, index) => {
+                    item.style.animationDelay = `${0.1 + index * 0.05}s`;
+                });
+            };
+
+            const close = () => {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            closeBtn.onclick = close;
+            overlay.onclick = (e) => { if (e.target === overlay) close(); };
+        }
+
+        setupOverlay('benefitsOverlay', 'openBenefits', 'closeBenefits');
+        setupOverlay('constraintsOverlay', 'openConstraints', 'closeConstraints');
+        setupOverlay('guideOverlay', 'openUserGuide', 'closeGuide');
+    </script>
+
+</body>
+
+</html>

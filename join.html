@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receiver Module | ShareScreen</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%230ea5e9;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M4 4 L16 28 L28 4' fill='none' stroke='url(%23g)' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M4 28 L16 4 L28 28' fill='none' stroke='url(%23g)' stroke-width='4' stroke-opacity='0.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+
+<body>
+    <!-- Universe Atmosphere -->
+    <div class="universe-bg">
+        <div class="nebula-1"></div>
+        <div class="nebula-2"></div>
+    </div>
+
+    <!-- Duo Mode Request Modal -->
+    <div id="duoModal" class="modal-overlay">
+        <div class="premium-modal">
+            <div class="modal-icon-ring">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+            </div>
+            <h3 class="modal-title">Duo Mode Requested</h3>
+            <p class="modal-text">The host in mission control wants to establish a two-way voice link. This will enable
+                your microphone for real-time collaboration.</p>
+            <div class="modal-actions">
+                <button id="declineDuo" class="modal-btn btn-decline">Decline</button>
+                <button id="acceptDuo" class="modal-btn btn-accept">Accept Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Disconnected Modal -->
+    <div id="disconnectModal" class="glass-panel"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255, 50, 50, 0.3); background: rgba(15, 5, 5, 0.9); backdrop-filter: blur(20px);">
+        <div style="margin-bottom: 1.5rem; color: #ff4d4d;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                </path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </div>
+        <h2 style="margin-bottom: 0.5rem; color: #fff;">Session Terminated</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">The host has ended the session.
+            Connection closed.</p>
+        <button class="btn-action btn-secondary" onclick="window.location.href='index.html'" style="width: 100%;">
+            Return to Dashboard
+        </button>
+    </div>
+
+    <div class="container center-box">
+        <div class="glass-panel">
+            <header style="text-align: center; margin-bottom: 3rem;">
+                <div class="badge">VIEWER MODULE READY</div>
+                <h1>Join Session</h1>
+                <p class="description" style="font-size: 0.95rem; margin-bottom: 0;">Enter the secure relay code to
+                    establish connection.</p>
+            </header>
+
+            <div id="setupSection">
+                <div style="text-align: left; margin-bottom: 2rem;">
+                    <label class="label-title">Access Identification</label>
+                    <input id="codeInput" class="professional-input" placeholder="XXXX-XXXX" type="text" autofocus>
+                </div>
+
+                <button class="btn-action btn-primary" id="joinBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    Establish Connection
+                </button>
+            </div>
+
+            <div class="video-feed">
+                <div class="video-container"
+                    style="position: relative; background: #000; border-radius: 16px; overflow: hidden; aspect-ratio: 16/9; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                    <!-- Signal Scanning Overlay -->
+                    <div id="scanningOverlay"
+                        style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; background: radial-gradient(circle at center, #0a0a0f 0%, #000 100%); transition: opacity 0.5s ease;">
+                        <div class="radar-circle"
+                            style="position: relative; width: 120px; height: 120px; border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 50%; margin-bottom: 2rem;">
+                            <div class="radar-sweep"
+                                style="position: absolute; inset: -1px; background: conic-gradient(from 0deg, transparent 270deg, rgba(0, 243, 255, 0.4) 360deg); border-radius: 50%; animation: sweep 2s linear infinite;">
+                            </div>
+                            <div
+                                style="position: absolute; inset: 10px; border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 50%;">
+                            </div>
+                            <div
+                                style="position: absolute; inset: 30px; border: 1px solid rgba(0, 243, 255, 0.05); border-radius: 50%;">
+                            </div>
+                            <div
+                                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 4px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 15px var(--primary);">
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div
+                                style="color: var(--primary); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.8;">
+                                Searching for Relay</div>
+                            <div style="color: var(--text-muted); font-size: 0.75rem; opacity: 0.6;">Awaiting host
+                                transmission...</div>
+                        </div>
+                    </div>
+
+                    <!-- Mic Active Indicator -->
+                    <div id="micIndicator"
+                        style="display: none; position: absolute; top: 1rem; right: 1rem; z-index: 10; background: rgba(0, 243, 255, 0.2); backdrop-filter: blur(8px); border: 1px solid var(--primary); padding: 0.5rem 1rem; border-radius: 50px; align-items: center; gap: 0.75rem; animation: pulseFade 2s infinite;">
+                        <div id="viewerVoiceWave" class="voice-wave-container active">
+                            <div class="voice-bar"></div>
+                            <div class="voice-bar"></div>
+                            <div class="voice-bar"></div>
+                            <div class="voice-bar"></div>
+                            <div class="voice-bar"></div>
+                        </div>
+                        <span
+                            style="color: var(--primary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Mic
+                            Active</span>
+                    </div>
+
+                    <div id="videoStatus" class="status-badge live">
+                        <div class="status-indicator live"></div>
+                        <span>Receiving Transmission</span>
+                    </div>
+
+                    <!-- Viewer Transmission Controls -->
+                    <div id="viewerActiveControls" class="transmission-controls" style="display: none;">
+                        <div class="smart-control-wrapper">
+                            <button id="viewerSmartTrigger" class="smart-control-trigger">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path
+                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                    </path>
+                                </svg>
+                                <span>Controls</span>
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+
+                            <div id="viewerSmartDropdown" class="smart-control-dropdown">
+                                <div id="toggleHostVideoMute" class="smart-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M23 7l-7 5 7 5V7z"></path>
+                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                    </svg>
+                                    <span class="smart-item-label">Host Video</span>
+                                </div>
+
+                                <div id="toggleHostAudioMute" class="smart-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 5L6 9H2V15H6L11 19V5Z"></path>
+                                        <path
+                                            d="M19.07 4.93C20.94 6.81 22 9.33 22 12C22 14.67 20.94 17.19 19.07 19.07M15.54 8.46C16.48 9.4 17 10.64 17 12C17 13.36 16.48 14.6 15.54 15.54">
+                                        </path>
+                                    </svg>
+                                    <span class="smart-item-label">Host Audio</span>
+                                </div>
+
+                                <div id="toggleViewerMic" class="smart-item" style="display: none;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                                    </svg>
+                                    <span class="smart-item-label">My Mic</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <video id="remoteVideo" autoplay playsinline controls
+                        style="width:100%; height: 100%; object-fit: contain;"></video>
+                    <button id="fullscreenBtn" class="fullscreen-overlay-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                        </svg>
+                        Full Screen
+                    </button>
+                </div>
+
+                <style>
+                    @keyframes sweep {
+                        from {
+                            transform: rotate(0deg);
+                        }
+
+                        to {
+                            transform: rotate(360deg);
+                        }
+                    }
+
+                    /* Fullscreen Control Bar Enhancement */
+                    .fs-controls-overlay {
+                        position: fixed;
+                        bottom: 2.5rem;
+                        left: 50%;
+                        transform: translateX(-50%) translateY(50px);
+                        background: rgba(10, 10, 15, 0.85);
+                        backdrop-filter: blur(20px);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        border-radius: 100px;
+                        padding: 0.6rem;
+                        z-index: 2147483647;
+                        display: none;
+                        opacity: 0;
+                        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                        pointer-events: auto;
+                    }
+
+                    .fs-controls-overlay.visible {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                    }
+
+                    .fs-controls-bar {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                    }
+
+                    .fs-icon-btn {
+                        width: 44px;
+                        height: 44px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        border-radius: 50%;
+                        color: var(--text-muted);
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    }
+
+                    .fs-icon-btn:hover {
+                        background: rgba(255, 255, 255, 0.1);
+                        color: var(--primary);
+                        transform: scale(1.1);
+                    }
+
+                    .fs-icon-btn.muted {
+                        color: #ff4d4d;
+                        border-color: rgba(255, 77, 77, 0.3);
+                    }
+
+                    .fs-divider-sep {
+                        width: 1px;
+                        height: 24px;
+                        background: rgba(255, 255, 255, 0.1);
+                        margin: 0 0.25rem;
+                    }
+
+                    .fs-exit-btn:hover {
+                        color: #ff4d4d;
+                    }
+
+                    /* Hide original UI elements in fullscreen to declutter */
+                    :fullscreen .transmission-controls {
+                        display: none !important;
+                    }
+                </style>
+            </div>
+
+            <div class="divider"></div>
+
+
+
+            <button class="btn-action btn-secondary" onclick="window.location.href='index.html'">
+                Return to Dashboard
+            </button>
+
+            <footer
+                style="margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.7rem; opacity: 0.6;">
+                Implemented and designed by RAGHAVAN S
+            </footer>
+        </div>
+    </div>
+
+
+    <script src="main.js"></script>
+    <script>
+        const socket = io("https://getmyscreen-server.onrender.com", {
+            transports: ["websocket"]
+        });
+
+        function setupSmartControl(triggerId, dropdownId) {
+            const trigger = document.getElementById(triggerId);
+            const dropdown = document.getElementById(dropdownId);
+            if (!trigger || !dropdown) return;
+
+            trigger.onclick = (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle("active");
+                trigger.classList.toggle("active");
+            };
+
+            document.addEventListener("click", (e) => {
+                if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove("active");
+                    trigger.classList.remove("active");
+                }
+            });
+        }
+
+        setupSmartControl("viewerSmartTrigger", "viewerSmartDropdown");
+
+
+
+        // ==============================
+        // Phase 4.3/4.4: Viewer PeerConnection
+        // ==============================
+
+        let pc;
+        let sessionCode;
+        let clientStream = null; // To hold the local mic stream
+
+        function createPeerConnection() {
+            if (pc) return; // FIX: Preserve existing connection for renegotiation
+            pc = new RTCPeerConnection({
+                iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+            });
+
+            const remoteVideo = document.getElementById("remoteVideo");
+            const remoteStream = new MediaStream();
+
+            pc.ontrack = (event) => {
+                const fsBtn = document.getElementById("fullscreenBtn");
+                const overlay = document.getElementById("scanningOverlay");
+
+                event.streams[0].getTracks().forEach(track => {
+                    remoteStream.addTrack(track);
+                });
+
+                remoteVideo.srcObject = remoteStream;
+                remoteVideo.muted = false;
+
+                console.log("[VIEWER] Track received:", event.track.kind);
+
+                remoteVideo.onloadedmetadata = () => {
+                    // Hide scanning overlay when video is ready
+                    if (overlay) {
+                        overlay.style.opacity = "0";
+                        setTimeout(() => overlay.style.display = "none", 500);
+                    }
+
+                    // FOCUS MODE: Hide setup controls
+                    const setupSection = document.getElementById("setupSection");
+                    if (setupSection) setupSection.style.display = "none";
+
+                    // Minimize Title for context
+                    const header = document.querySelector(".glass-panel header");
+                    if (header) {
+                        header.style.marginBottom = "1.5rem";
+                        header.querySelector("h1").style.fontSize = "1.5rem";
+                        header.querySelector(".badge").style.display = "none";
+                    }
+
+                    // Show Controls
+                    document.getElementById("viewerActiveControls").style.display = "flex";
+
+                    remoteVideo.play().catch(() => {
+                        console.log("Autoplay blocked — user interaction required");
+                    });
+                };
+
+                // Show fullscreen button when stream arrives
+                if (fsBtn) fsBtn.style.display = "flex";
+            };
+
+            // Setup Viewer Local Controls
+            document.getElementById("toggleHostVideoMute").onclick = () => {
+                const video = document.getElementById("remoteVideo");
+                const track = video.srcObject?.getVideoTracks()[0];
+                if (track) {
+                    track.enabled = !track.enabled;
+                    document.getElementById("toggleHostVideoMute").classList.toggle("muted", !track.enabled);
+                    const status = document.getElementById("videoStatus");
+                    if (!track.enabled) {
+                        status.className = "status-badge muted";
+                        status.innerHTML = '<div class="status-indicator muted"></div><span>Feed Paused</span>';
+                    } else {
+                        status.className = "status-badge live";
+                        status.innerHTML = '<div class="status-indicator live"></div><span>Receiving Transmission</span>';
+                    }
+                }
+            };
+
+            document.getElementById("toggleHostAudioMute").onclick = () => {
+                const video = document.getElementById("remoteVideo");
+                video.muted = !video.muted;
+                document.getElementById("toggleHostAudioMute").classList.toggle("muted", video.muted);
+            };
+
+            document.getElementById("toggleViewerMic").onclick = () => {
+                if (clientStream) {
+                    const track = clientStream.getAudioTracks()[0];
+                    if (track) {
+                        track.enabled = !track.enabled;
+                        document.getElementById("toggleViewerMic").classList.toggle("muted", !track.enabled);
+                    }
+                }
+            };
+
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit("signal", {
+                        code: sessionCode,
+                        signalData: {
+                            type: "ice",
+                            candidate: event.candidate
+                        }
+                    });
+                    console.log("[VIEWER] ICE sent");
+                }
+            };
+        }
+
+        const joinBtn = document.getElementById("joinBtn");
+        const input = document.getElementById("codeInput");
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+        const remoteVideo = document.getElementById("remoteVideo");
+
+        joinBtn.addEventListener("click", () => {
+            sessionCode = input.value.trim();
+
+            if (!sessionCode) return;
+
+            socket.emit("viewer-join", sessionCode);
+        });
+
+        // Logic for Fullscreen Mode
+        fullscreenBtn.addEventListener("click", () => {
+            if (remoteVideo.requestFullscreen) {
+                remoteVideo.requestFullscreen();
+            } else if (remoteVideo.webkitRequestFullscreen) { /* Safari */
+                remoteVideo.webkitRequestFullscreen();
+            } else if (remoteVideo.msRequestFullscreen) { /* IE11 */
+                remoteVideo.msRequestFullscreen();
+            }
+        });
+
+        socket.on("session-info", (data) => {
+            if (data.status === "success") {
+                console.log("[VIEWER] Connected to session");
+            } else {
+                alert(data.message);
+            }
+        });
+
+        socket.on("host-left", () => {
+            const modal = document.getElementById("disconnectModal");
+            const remoteVideo = document.getElementById("remoteVideo");
+            const fsBtn = document.getElementById("fullscreenBtn");
+            const micIndicator = document.getElementById("micIndicator");
+            const videoBox = document.querySelector(".video-feed");
+
+            if (modal) modal.style.display = "block";
+            if (remoteVideo) remoteVideo.srcObject = null;
+            if (fsBtn) fsBtn.style.display = "none";
+            if (micIndicator) micIndicator.style.display = "none";
+            if (videoBox) videoBox.classList.remove("holographic-link", "duo-active-glow");
+
+            // Stop local mic if active
+            if (clientStream) {
+                clientStream.getTracks().forEach(t => t.stop());
+                clientStream = null;
+            }
+
+            console.log("[VIEWER] Host disconnected");
+        });
+
+        socket.on("signal", async (data) => {
+            const signal = data.signalData;
+
+            if (signal.type === "offer") {
+                console.log("[VIEWER] Offer received");
+                createPeerConnection();
+                await pc.setRemoteDescription(new RTCSessionDescription(signal.offer));
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                socket.emit("signal", {
+                    code: sessionCode,
+                    signalData: { type: "answer", answer: answer }
+                });
+                console.log("[VIEWER] Answer sent");
+            }
+
+            if (signal.type === "ice" && pc) {
+                await pc.addIceCandidate(signal.candidate);
+            }
+
+            // 🔊 DUO MODE (2-WAY VOICE)
+            if (signal.type === "duo-request") {
+                const duoModal = document.getElementById("duoModal");
+                const acceptBtn = document.getElementById("acceptDuo");
+                const declineBtn = document.getElementById("declineDuo");
+
+                duoModal.classList.add("active");
+
+                const handleAccept = async () => {
+                    duoModal.classList.remove("active");
+                    cleanup();
+                    try {
+                        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        clientStream = micStream; // Store the stream
+                        micStream.getTracks().forEach(track => {
+                            pc.addTrack(track, micStream);
+                        });
+
+                        socket.emit("signal", {
+                            code: sessionCode,
+                            signalData: { type: "duo-accept" }
+                        });
+                        // MISSION START: Voice Link Established
+                        const micIndicator = document.getElementById("micIndicator");
+                        micIndicator.style.display = "flex";
+                        const videoBox = document.querySelector(".video-feed");
+                        if (videoBox) videoBox.classList.add("holographic-link", "duo-active-glow");
+
+                        // Show viewer mic control
+                        document.getElementById("toggleViewerMic").style.display = "flex";
+
+                        // Alert slightly moved to avoid overlap with modal logic if called separately
+                        console.log("[DUO] Voice link active.");
+                        console.log("[VIEWER] Duo Mode accepted and mic added");
+                    } catch (err) {
+                        console.error("Duo mic access failed:", err);
+                        alert("Microphone access failed for Duo Mode.");
+                    }
+                };
+
+                const handleDecline = () => {
+                    duoModal.classList.remove("active");
+                    cleanup();
+                };
+
+                const cleanup = () => {
+                    acceptBtn.removeEventListener("click", handleAccept);
+                    declineBtn.removeEventListener("click", handleDecline);
+                };
+
+                acceptBtn.addEventListener("click", handleAccept);
+                declineBtn.addEventListener("click", handleDecline);
+            }
+
+            if (signal.type === "duo-stop") {
+                console.log("[VIEWER] Duo Mode stopped by host");
+                const duoModal = document.getElementById("duoModal");
+                const micIndicator = document.getElementById("micIndicator");
+                const videoBox = document.querySelector(".video-feed");
+
+                if (duoModal) duoModal.classList.remove("active");
+                if (micIndicator) micIndicator.style.display = "none";
+                if (videoBox) videoBox.classList.remove("holographic-link", "duo-active-glow");
+
+                // Hide viewer mic control
+                document.getElementById("toggleViewerMic").style.display = "none";
+
+                pc.getSenders().forEach(sender => {
+                    if (sender.track?.kind === "audio") {
+                        sender.track.stop();
+                        pc.removeTrack(sender);
+                    }
+                });
+            }
+        });
+
+        // ==============================
+        // Fullscreen Controls Enhancement
+        // ==============================
+        (function () {
+            const fsOverlay = document.createElement('div');
+            fsOverlay.id = 'fsOverlay';
+            fsOverlay.className = 'fs-controls-overlay';
+            fsOverlay.innerHTML = `
+                <div class="fs-controls-bar">
+                    <button id="fsVideoToggle" class="fs-icon-btn" title="Toggle Host Video">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    </button>
+                    <button id="fsAudioToggle" class="fs-icon-btn" title="Toggle Host Audio">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2V15H6L11 19V5Z"></path><path d="M19.07 4.93C20.94 6.81 22 9.33 22 12C22 14.67 20.94 17.19 19.07 19.07M15.54 8.46C16.48 9.4 17 10.64 17 12C17 13.36 16.48 14.6 15.54 15.54"></path></svg>
+                    </button>
+                    <div class="fs-divider-sep"></div>
+                    <button id="fsExitAction" class="fs-icon-btn fs-exit-btn" title="Exit Fullscreen">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(fsOverlay);
+
+            let hideTimeout;
+            const showOverlay = () => {
+                if (!document.fullscreenElement) return;
+                fsOverlay.classList.add('visible');
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    fsOverlay.classList.remove('visible');
+                }, 3000);
+            };
+
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    fsOverlay.style.display = 'block';
+                    setTimeout(showOverlay, 50);
+                } else {
+                    fsOverlay.classList.remove('visible');
+                    setTimeout(() => {
+                        if (!document.fullscreenElement) fsOverlay.style.display = 'none';
+                    }, 400);
+                }
+            });
+
+            document.addEventListener('mousemove', () => {
+                if (document.fullscreenElement) showOverlay();
+            });
+
+            const vBtn = document.getElementById('fsVideoToggle');
+            const aBtn = document.getElementById('fsAudioToggle');
+            const eBtn = document.getElementById('fsExitAction');
+
+            vBtn.onclick = (e) => {
+                e.stopPropagation();
+                const target = document.getElementById('toggleHostVideoMute');
+                if (target) target.click();
+                updateStates();
+            };
+
+            aBtn.onclick = (e) => {
+                e.stopPropagation();
+                const target = document.getElementById('toggleHostAudioMute');
+                if (target) target.click();
+                updateStates();
+            };
+
+            eBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            };
+
+            function updateStates() {
+                const videoBtn = document.getElementById('toggleHostVideoMute');
+                const audioBtn = document.getElementById('toggleHostAudioMute');
+                if (videoBtn && audioBtn) {
+                    const vm = videoBtn.classList.contains('muted');
+                    const am = audioBtn.classList.contains('muted');
+                    vBtn.classList.toggle('muted', vm);
+                    aBtn.classList.toggle('muted', am);
+                }
+            }
+            setInterval(updateStates, 1000);
+        })();
+    </script>
+</body>
+
+</html>
